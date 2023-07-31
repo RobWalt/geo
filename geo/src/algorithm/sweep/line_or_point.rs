@@ -131,6 +131,7 @@ impl<T: GeoNum> PartialOrd for LineOrPoint<T> {
                 if self.left == other.left {
                     Some(Ordering::Equal)
                 } else {
+                    log::info!("unequal points don't satisfy precondition {self:?}\n{other:?}");
                     // Unequal points do not satisfy pre-condition and
                     // can't be ordered.
                     None
@@ -141,6 +142,7 @@ impl<T: GeoNum> PartialOrd for LineOrPoint<T> {
                 let (p, q) = self.end_points();
                 let r = other.left;
                 if r > q || p > r {
+                    log::info!("sweep point not in range\n\nrange:{q:?}..={p:?} (flipped?)\npoint:{r:?}\n\n{self:?}\n{other:?}");
                     return None;
                 }
                 Some(
@@ -156,6 +158,7 @@ impl<T: GeoNum> PartialOrd for LineOrPoint<T> {
                     return other.partial_cmp(self).map(Ordering::reverse);
                 }
                 if p1 >= q2 || p2 >= q1 {
+                    log::info!("no overlap between lines\n\n{self:?}\n{other:?}");
                     return None;
                 }
 
