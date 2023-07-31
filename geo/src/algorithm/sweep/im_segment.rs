@@ -1,5 +1,7 @@
 use std::{cell::RefCell, cmp::Ordering, fmt::Debug, rc::Rc};
 
+use num_traits::Float;
+
 use crate::types::GeoError;
 
 use super::*;
@@ -206,6 +208,17 @@ impl<C: Cross + Clone> IMSegment<C> {
     pub fn is_correct(event: &Event<C::Scalar, IMSegment<C>>) -> Result<bool, GeoError> {
         use EventType::*;
         let segment = RefCell::borrow(&event.payload.inner);
+        let is_uncomparable = segment.geom.left().x.is_infinite()
+            || segment.geom.left().x.is_nan()
+            || segment.geom.left().y.is_infinite()
+            || segment.geom.left().y.is_nan()
+            || segment.geom.right().x.is_infinite()
+            || segment.geom.right().x.is_nan()
+            || segment.geom.right().y.is_infinite()
+            || segment.geom.right().y.is_nan();
+        if is_uncomparable {
+            return Ok(false);
+        }
         if let LineRight = event.ty {
             debug_assert!(segment.geom.is_line());
             Ok(!segment.is_overlapping && segment.geom.right() == event.point)
