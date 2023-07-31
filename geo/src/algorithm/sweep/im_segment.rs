@@ -217,7 +217,7 @@ impl<C: Cross + Clone> IMSegment<C> {
             || segment.geom.right().y.is_infinite()
             || segment.geom.right().y.is_nan();
         if is_uncomparable {
-            return Ok(false);
+            return Err(GeoError::Unreachable("bad segment"));
         }
         if let LineRight = event.ty {
             debug_assert!(segment.geom.is_line());
