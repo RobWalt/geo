@@ -30,6 +30,8 @@
   <https://github.com/georust/geo/pull/1063>
 * Add `TriangulateSpade` trait which provides (un)constrained Delaunay Triangulations for all `geo_types` via the `spade` crate
   * <https://github.com/georust/geo/pull/1083>
+* Add `Stitch` trait which implements a new kind of combining algorithm for geometries
+  * <https://github.com/georust/geo/pull/1087>
 
 ## 0.26.0
 
