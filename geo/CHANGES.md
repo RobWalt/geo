@@ -32,6 +32,8 @@
   * <https://github.com/georust/geo/pull/1083>
 * Add `Stitch` trait which implements a new kind of combining algorithm for geometries
   * <https://github.com/georust/geo/pull/1087>
+* Add `SpadeBoolops` trait which implements a new algorithm for intersection, difference and union of geometries
+  * <https://github.com/georust/geo/pull/1089>
 
 ## 0.26.0
 
