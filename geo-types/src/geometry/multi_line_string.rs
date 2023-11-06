@@ -197,21 +197,21 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{line_string, wkt};
+    use crate::{line_string, wktm};
 
     #[test]
     fn test_iter() {
-        let multi: MultiLineString<i32> = wkt! {
+        let multi: MultiLineString<i32> = wktm! {
             MULTILINESTRING((0 0,2 0,1 2,0 0), (10 10,12 10,11 12,10 10))
         };
 
         let mut first = true;
         for p in &multi {
             if first {
-                assert_eq!(p, &wkt! { LINESTRING(0 0,2 0,1 2,0 0) });
+                assert_eq!(p, &wktm! { LINESTRING(0 0,2 0,1 2,0 0) });
                 first = false;
             } else {
-                assert_eq!(p, &wkt! { LINESTRING(10 10,12 10,11 12,10 10) });
+                assert_eq!(p, &wktm! { LINESTRING(10 10,12 10,11 12,10 10) });
             }
         }
 
@@ -219,10 +219,10 @@ mod test {
         first = true;
         for p in &multi {
             if first {
-                assert_eq!(p, &wkt! { LINESTRING(0 0,2 0,1 2,0 0) });
+                assert_eq!(p, &wktm! { LINESTRING(0 0,2 0,1 2,0 0) });
                 first = false;
             } else {
-                assert_eq!(p, &wkt! { LINESTRING(10 10,12 10,11 12,10 10) });
+                assert_eq!(p, &wktm! { LINESTRING(10 10,12 10,11 12,10 10) });
             }
         }
     }

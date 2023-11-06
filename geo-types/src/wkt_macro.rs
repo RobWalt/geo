@@ -8,11 +8,11 @@
 ///
 /// ```
 /// use geo_types::wkt;
-/// let point = wkt! { POINT(1.0 2.0) };
+/// let point = wktm! { POINT(1.0 2.0) };
 /// assert_eq!(point.x(), 1.0);
 /// assert_eq!(point.y(), 2.0);
 ///
-/// let geometry_collection = wkt! {
+/// let geometry_collection = wktm! {
 ///     GEOMETRYCOLLECTION(
 ///         POINT(1.0 2.0),
 ///         LINESTRING EMPTY,
@@ -22,7 +22,7 @@
 /// assert_eq!(geometry_collection.len(), 3);
 /// ```
 #[macro_export]
-macro_rules! wkt {
+macro_rules! wktm {
     // Hide distracting implementation details from the generated rustdoc.
     ($($wkt:tt)+) => {
         {
@@ -61,13 +61,13 @@ macro_rules! wkt_internal {
         $crate::polygon![]
     };
     (POLYGON ( $exterior_tt: tt )) => {
-        $crate::Polygon::new($crate::wkt!(LINESTRING $exterior_tt), $crate::_alloc::vec![])
+        $crate::Polygon::new($crate::wktm!(LINESTRING $exterior_tt), $crate::_alloc::vec![])
     };
     (POLYGON( $exterior_tt: tt, $($interiors_tt: tt),+ )) => {
         $crate::Polygon::new(
-            $crate::wkt!(LINESTRING $exterior_tt),
+            $crate::wktm!(LINESTRING $exterior_tt),
             $crate::_alloc::vec![
-               $($crate::wkt!(LINESTRING $interiors_tt)),*
+               $($crate::wktm!(LINESTRING $interiors_tt)),*
             ]
         )
     };
@@ -99,7 +99,7 @@ macro_rules! wkt_internal {
     };
     (MULTILINESTRING ( $($line_string_tt: tt),* )) => {
         $crate::MultiLineString($crate::_alloc::vec![
-           $($crate::wkt!(LINESTRING $line_string_tt)),*
+           $($crate::wktm!(LINESTRING $line_string_tt)),*
         ])
     };
     (MULTILINESTRING $($tail: tt)*) => {
@@ -113,7 +113,7 @@ macro_rules! wkt_internal {
     };
     (MULTIPOLYGON ( $($polygon_tt: tt),* )) => {
         $crate::MultiPolygon($crate::_alloc::vec![
-           $($crate::wkt!(POLYGON $polygon_tt)),*
+           $($crate::wktm!(POLYGON $polygon_tt)),*
         ])
     };
     (MULTIPOLYGON $($tail: tt)*) => {
@@ -127,7 +127,7 @@ macro_rules! wkt_internal {
     };
     (GEOMETRYCOLLECTION ( $($el_type:tt $el_tt: tt),* )) => {
         $crate::GeometryCollection($crate::_alloc::vec![
-           $($crate::Geometry::from($crate::wkt!($el_type $el_tt))),*
+           $($crate::Geometry::from($crate::wktm!($el_type $el_tt))),*
         ])
     };
     (GEOMETRYCOLLECTION $($tail: tt)*) => {
@@ -145,65 +145,65 @@ mod test {
 
     #[test]
     fn point() {
-        let point = wkt! { POINT(1.0 2.0) };
+        let point = wktm! { POINT(1.0 2.0) };
         assert_eq!(point.x(), 1.0);
         assert_eq!(point.y(), 2.0);
 
-        let point = wkt! { POINT(1.0   2.0) };
+        let point = wktm! { POINT(1.0   2.0) };
         assert_eq!(point.x(), 1.0);
         assert_eq!(point.y(), 2.0);
 
         // This (rightfully) fails to compile because geo-types doesn't support "empty" points
-        // wkt! { POINT EMPTY }
+        // wktm! { POINT EMPTY }
     }
 
     #[test]
     fn empty_line_string() {
-        let line_string: LineString<f64> = wkt! { LINESTRING EMPTY };
+        let line_string: LineString<f64> = wktm! { LINESTRING EMPTY };
         assert_eq!(line_string.0.len(), 0);
 
         // This (rightfully) fails to compile because its invalid wkt
-        // wkt! { LINESTRING() }
+        // wktm! { LINESTRING() }
     }
 
     #[test]
     fn line_string() {
-        let line_string = wkt! { LINESTRING(1.0 2.0,3.0 4.0) };
+        let line_string = wktm! { LINESTRING(1.0 2.0,3.0 4.0) };
         assert_eq!(line_string.0.len(), 2);
         assert_eq!(line_string[0], coord! { x: 1.0, y: 2.0 });
     }
 
     #[test]
     fn empty_polygon() {
-        let polygon: Polygon = wkt! { POLYGON EMPTY };
+        let polygon: Polygon = wktm! { POLYGON EMPTY };
         assert_eq!(polygon.exterior().0.len(), 0);
         assert_eq!(polygon.interiors().len(), 0);
 
         // This (rightfully) fails to compile because its invalid wkt
-        // wkt! { POLYGON() }
+        // wktm! { POLYGON() }
     }
 
     #[test]
     fn polygon() {
-        let polygon = wkt! { POLYGON((1.0 2.0)) };
+        let polygon = wktm! { POLYGON((1.0 2.0)) };
         assert_eq!(polygon.exterior().0.len(), 1);
         assert_eq!(polygon.exterior().0[0], coord! { x: 1.0, y: 2.0 });
 
-        let polygon = wkt! { POLYGON((1.0 2.0,3.0 4.0)) };
+        let polygon = wktm! { POLYGON((1.0 2.0,3.0 4.0)) };
         // Note: an extra coord is added to close the linestring
         assert_eq!(polygon.exterior().0.len(), 3);
         assert_eq!(polygon.exterior().0[0], coord! { x: 1.0, y: 2.0 });
         assert_eq!(polygon.exterior().0[1], coord! { x: 3.0, y: 4.0 });
         assert_eq!(polygon.exterior().0[2], coord! { x: 1.0, y: 2.0 });
 
-        let polygon = wkt! { POLYGON((1.0 2.0), (1.1 2.1)) };
+        let polygon = wktm! { POLYGON((1.0 2.0), (1.1 2.1)) };
         assert_eq!(polygon.exterior().0.len(), 1);
         assert_eq!(polygon.interiors().len(), 1);
 
         assert_eq!(polygon.exterior().0[0], coord! { x: 1.0, y: 2.0 });
         assert_eq!(polygon.interiors()[0].0[0], coord! { x: 1.1, y: 2.1 });
 
-        let polygon = wkt! { POLYGON((1.0 2.0,3.0 4.0), (1.1 2.1,3.1 4.1), (1.2 2.2,3.2 4.2)) };
+        let polygon = wktm! { POLYGON((1.0 2.0,3.0 4.0), (1.1 2.1,3.1 4.1), (1.2 2.2,3.2 4.2)) };
         assert_eq!(polygon.exterior().0.len(), 3);
         assert_eq!(polygon.interiors().len(), 2);
         assert_eq!(polygon.interiors()[1][1], coord! { x: 3.2, y: 4.2 });
@@ -211,18 +211,18 @@ mod test {
 
     #[test]
     fn empty_multi_point() {
-        let multipoint: MultiPoint = wkt! { MULTIPOINT EMPTY };
+        let multipoint: MultiPoint = wktm! { MULTIPOINT EMPTY };
         assert!(multipoint.0.is_empty());
         // This (rightfully) fails to compile because its invalid wkt
-        // wkt! { MULTIPOINT() }
+        // wktm! { MULTIPOINT() }
     }
 
     #[test]
     fn multi_point() {
-        let multi_point = wkt! { MULTIPOINT(1.0 2.0) };
+        let multi_point = wktm! { MULTIPOINT(1.0 2.0) };
         assert_eq!(multi_point.0, vec![point! { x: 1.0, y: 2.0}]);
 
-        let multi_point = wkt! { MULTIPOINT(1.0 2.0,3.0 4.0) };
+        let multi_point = wktm! { MULTIPOINT(1.0 2.0,3.0 4.0) };
         assert_eq!(
             multi_point.0,
             vec![point! { x: 1.0, y: 2.0}, point! { x: 3.0, y: 4.0}]
@@ -231,48 +231,48 @@ mod test {
 
     #[test]
     fn empty_multi_line_string() {
-        let multi_line_string: MultiLineString = wkt! { MULTILINESTRING EMPTY };
+        let multi_line_string: MultiLineString = wktm! { MULTILINESTRING EMPTY };
         assert_eq!(multi_line_string.0, vec![]);
         // This (rightfully) fails to compile because its invalid wkt
-        // wkt! { MULTILINESTRING() }
+        // wktm! { MULTILINESTRING() }
     }
     #[test]
     fn multi_line_string() {
-        let multi_line_string = wkt! { MULTILINESTRING ((1.0 2.0,3.0 4.0)) };
+        let multi_line_string = wktm! { MULTILINESTRING ((1.0 2.0,3.0 4.0)) };
         assert_eq!(multi_line_string.0.len(), 1);
         assert_eq!(multi_line_string.0[0].0[1], coord! { x: 3.0, y: 4.0 });
-        let multi_line_string = wkt! { MULTILINESTRING ((1.0 2.0,3.0 4.0),(5.0 6.0,7.0 8.0)) };
+        let multi_line_string = wktm! { MULTILINESTRING ((1.0 2.0,3.0 4.0),(5.0 6.0,7.0 8.0)) };
         assert_eq!(multi_line_string.0.len(), 2);
         assert_eq!(multi_line_string.0[1].0[1], coord! { x: 7.0, y: 8.0 });
 
-        let multi_line_string = wkt! { MULTILINESTRING ((1.0 2.0,3.0 4.0),EMPTY) };
+        let multi_line_string = wktm! { MULTILINESTRING ((1.0 2.0,3.0 4.0),EMPTY) };
         assert_eq!(multi_line_string.0.len(), 2);
         assert_eq!(multi_line_string.0[1].0.len(), 0);
     }
 
     #[test]
     fn empty_multi_polygon() {
-        let multi_polygon: MultiPolygon = wkt! { MULTIPOLYGON EMPTY };
+        let multi_polygon: MultiPolygon = wktm! { MULTIPOLYGON EMPTY };
         assert!(multi_polygon.0.is_empty());
 
         // This (rightfully) fails to compile because its invalid wkt
-        // wkt! { MULTIPOLYGON() }
+        // wktm! { MULTIPOLYGON() }
     }
 
     #[test]
     fn multi_line_polygon() {
-        let multi_polygon = wkt! { MULTIPOLYGON (((1.0 2.0))) };
+        let multi_polygon = wktm! { MULTIPOLYGON (((1.0 2.0))) };
         assert_eq!(multi_polygon.0.len(), 1);
         assert_eq!(multi_polygon.0[0].exterior().0[0], coord! { x: 1.0, y: 2.0});
 
-        let multi_polygon = wkt! { MULTIPOLYGON (((1.0 2.0,3.0 4.0), (1.1 2.1,3.1 4.1), (1.2 2.2,3.2 4.2)),((1.0 2.0))) };
+        let multi_polygon = wktm! { MULTIPOLYGON (((1.0 2.0,3.0 4.0), (1.1 2.1,3.1 4.1), (1.2 2.2,3.2 4.2)),((1.0 2.0))) };
         assert_eq!(multi_polygon.0.len(), 2);
         assert_eq!(
             multi_polygon.0[0].interiors()[1].0[0],
             coord! { x: 1.2, y: 2.2}
         );
 
-        let multi_polygon = wkt! { MULTIPOLYGON (((1.0 2.0,3.0 4.0), (1.1 2.1,3.1 4.1), (1.2 2.2,3.2 4.2)), EMPTY) };
+        let multi_polygon = wktm! { MULTIPOLYGON (((1.0 2.0,3.0 4.0), (1.1 2.1,3.1 4.1), (1.2 2.2,3.2 4.2)), EMPTY) };
         assert_eq!(multi_polygon.0.len(), 2);
         assert_eq!(
             multi_polygon.0[0].interiors()[1].0[0],
@@ -283,16 +283,16 @@ mod test {
 
     #[test]
     fn empty_geometry_collection() {
-        let geometry_collection: GeometryCollection = wkt! { GEOMETRYCOLLECTION EMPTY };
+        let geometry_collection: GeometryCollection = wktm! { GEOMETRYCOLLECTION EMPTY };
         assert!(geometry_collection.is_empty());
 
         // This (rightfully) fails to compile because its invalid wkt
-        // wkt! { MULTIPOLYGON() }
+        // wktm! { MULTIPOLYGON() }
     }
 
     #[test]
     fn geometry_collection() {
-        let geometry_collection = wkt! {
+        let geometry_collection = wktm! {
             GEOMETRYCOLLECTION (
                 POINT (40.0 10.0),
                 LINESTRING (10.0 10.0, 20.0 20.0, 10.0 40.0),
@@ -313,15 +313,15 @@ mod test {
 
     #[test]
     fn other_numeric_types() {
-        let point: Point<i32> = wkt!(POINT(1 2));
+        let point: Point<i32> = wktm!(POINT(1 2));
         assert_eq!(point.x(), 1i32);
         assert_eq!(point.y(), 2i32);
 
-        let point: Point<u64> = wkt!(POINT(1 2));
+        let point: Point<u64> = wktm!(POINT(1 2));
         assert_eq!(point.x(), 1u64);
         assert_eq!(point.y(), 2u64);
 
-        let point: Point<f32> = wkt!(POINT(1.0 2.0));
+        let point: Point<f32> = wktm!(POINT(1.0 2.0));
         assert_eq!(point.x(), 1.0f32);
         assert_eq!(point.y(), 2.0f32);
     }
