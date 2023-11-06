@@ -130,9 +130,6 @@ pub use error::Error;
 #[macro_use]
 pub mod macros;
 
-#[macro_use]
-pub mod wkt_macro;
-
 #[cfg(feature = "arbitrary")]
 mod arbitrary;
 
