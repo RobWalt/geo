@@ -9,6 +9,7 @@ pub(crate) mod point;
 pub(crate) mod polygon;
 pub(crate) mod rect;
 pub(crate) mod triangle;
+pub(crate) mod wkt;
 
 // re-export all the geometry variants:
 #[allow(deprecated)]
