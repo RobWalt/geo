@@ -262,7 +262,7 @@ where
 #[cfg(test)]
 mod test {
     use crate::Area;
-    use crate::{coord, polygon, wktm, Line, MultiPolygon, Polygon, Rect, Triangle};
+    use crate::{coord, polygon, wkt, Line, MultiPolygon, Polygon, Rect, Triangle};
 
     // Area of the polygon
     #[test]
@@ -273,12 +273,12 @@ mod test {
 
     #[test]
     fn area_one_point_polygon_test() {
-        let poly = wktm! { POLYGON((1. 0.)) };
+        let poly = wkt! { POLYGON((1. 0.)) };
         assert_relative_eq!(poly.signed_area(), 0.);
     }
     #[test]
     fn area_polygon_test() {
-        let polygon = wktm! { POLYGON((0. 0.,5. 0.,5. 6.,0. 6.,0. 0.)) };
+        let polygon = wkt! { POLYGON((0. 0.,5. 0.,5. 6.,0. 6.,0. 0.)) };
         assert_relative_eq!(polygon.signed_area(), 30.);
     }
     #[test]

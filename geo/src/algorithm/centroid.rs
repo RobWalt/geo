@@ -692,7 +692,7 @@ impl<T: GeoFloat> WeightedCentroid<T> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{coord, line_string, point, polygon, wktm};
+    use crate::{coord, line_string, point, polygon, wkt};
 
     /// small helper to create a coordinate
     fn c<T: GeoFloat>(x: T, y: T) -> Coord<T> {
@@ -783,7 +783,7 @@ mod test {
     }
     #[test]
     fn multilinestring_test() {
-        let mls = wktm! {
+        let mls = wkt! {
             MULTILINESTRING(
                 (0.0 0.0,1.0 10.0),
                 (1.0 10.0,2.0 0.0,3.0 1.0),
@@ -858,7 +858,7 @@ mod test {
     #[test]
     fn polygon_hole_test() {
         // hexagon
-        let p1 = wktm! { POLYGON(
+        let p1 = wkt! { POLYGON(
             (5.0 1.0,4.0 2.0,4.0 3.0,5.0 4.0,6.0 4.0,7.0 3.0,7.0 2.0,6.0 1.0,5.0 1.0),
             (5.0 1.3,5.5 2.0,6.0 1.3,5.0 1.3),
             (5.0 2.3,5.5 3.0,6.0 2.3,5.0 2.3)
@@ -868,17 +868,17 @@ mod test {
     }
     #[test]
     fn flat_polygon_test() {
-        let poly = wktm! { POLYGON((0. 1.,1. 1.,0. 1.)) };
+        let poly = wkt! { POLYGON((0. 1.,1. 1.,0. 1.)) };
         assert_eq!(poly.centroid(), Some(p(0.5, 1.)));
     }
     #[test]
     fn multi_poly_with_flat_polygon_test() {
-        let multipoly = wktm! { MULTIPOLYGON(((0. 0.,1. 0.,0. 0.))) };
+        let multipoly = wkt! { MULTIPOLYGON(((0. 0.,1. 0.,0. 0.))) };
         assert_eq!(multipoly.centroid(), Some(p(0.5, 0.)));
     }
     #[test]
     fn multi_poly_with_multiple_flat_polygon_test() {
-        let multipoly = wktm! { MULTIPOLYGON(
+        let multipoly = wkt! { MULTIPOLYGON(
             ((1. 1.,1. 3.,1. 1.)),
             ((2. 2.,6. 2.,2. 2.))
         )};
@@ -887,10 +887,10 @@ mod test {
     }
     #[test]
     fn multi_poly_with_only_points_test() {
-        let p1 = wktm! { POLYGON((1. 1.,1. 1.,1. 1.)) };
+        let p1 = wkt! { POLYGON((1. 1.,1. 1.,1. 1.)) };
         assert_eq!(p1.centroid(), Some(p(1., 1.)));
 
-        let multipoly = wktm! { MULTIPOLYGON(
+        let multipoly = wkt! { MULTIPOLYGON(
             ((1. 1.,1. 1.,1. 1.)),
             ((2. 2., 2. 2.,2. 2.))
         ) };
