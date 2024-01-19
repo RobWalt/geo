@@ -237,7 +237,8 @@ pub mod simplify_vw;
 pub use simplify_vw::{SimplifyVw, SimplifyVwIdx, SimplifyVwPreserve};
 
 /// Stitch together triangles with adjacent sides. Alternative to unioning triangles via BooleanOps.
-pub(crate) mod stitch;
+pub mod stitch;
+pub use stitch::StitchTriangles;
 
 /// Transform a geometry using PROJ.
 #[cfg(feature = "use-proj")]
