@@ -12,7 +12,7 @@
   * <https://github.com/georust/geo/pull/1196>
 * Implement Frechet distance using linear algorithm to avoid `fatal runtime error: stack overflow` and improve overall performances.
   * <https://github.com/georust/geo/pull/1199>
-* Add `Stitch` trait which implements a new kind of combining algorithm for geometries
+* Add `StitchTriangles` trait which implements a new kind of combining algorithm for `Triangle`s
   * <https://github.com/georust/geo/pull/1087>
 
 ## 0.28.0
