@@ -10,12 +10,17 @@
   * <https://github.com/georust/geo/pull/1192>
 * Fix `AffineTransform::compose` ordering to be conventional - such that the argument is applied *after* self.
   * <https://github.com/georust/geo/pull/1196>
+* Add `PreparedGeometry` to speed up repeated `Relate` operations.
+  * <https://github.com/georust/geo/pull/1197>
 * Implement Frechet distance using linear algorithm to avoid `fatal runtime error: stack overflow` and improve overall performances.
   * <https://github.com/georust/geo/pull/1199>
+* Bump `geo` MSRV to 1.74 and update CI
+  * <https://github.com/georust/geo/pull/1201>
 * Add `StitchTriangles` trait which implements a new kind of combining algorithm for `Triangle`s
   * <https://github.com/georust/geo/pull/1087>
 * Add `SpadeBoolops` trait which implements panic-less boolean operations based on triangulation
   * <https://github.com/georust/geo/pull/1089>
+
 
 ## 0.28.0
 
